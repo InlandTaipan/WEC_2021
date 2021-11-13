@@ -23,7 +23,7 @@ bool spinDirection() {
 }
 
 // Debounce reading of spinDirection()
-bool debounceSpin() {
+bool debounceSpinDirection() {
   const int DEBOUNCE_ITERATIONS = 20; // Number of times to call spinDirection() for debouncing
   int counter = 0;                    // Increment if DARK_BLUE, decrement if LIGHT_BLUE
   bool directionReading;              // Value returned from spinDirection
