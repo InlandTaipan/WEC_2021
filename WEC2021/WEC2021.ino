@@ -1,7 +1,9 @@
 #include <Stepper.h>
 
 #define PHOTORESISTOR A0
+#define SENSE_LED D1
 #define DONE_LED D2
+#define DONE_BLINK_RATE 300
 #define COLOUR_THRESHOLD 630
 
 #define DARK_BLUE true
@@ -26,6 +28,11 @@ void setup() {
   motor.setSpeed(80);
   // put your setup code here, to run once:
   pinMode(PHOTORESISTOR, INPUT); 
+  pinMode(SENSE_LED, OUTPUT);
+  pinMode(DONE_LED, OUTPUT);
+
+  digitalWrite(SENSE_LED, HIGH);
+  digitalWrite(DONE_LED, HIGH);
 }
 
 // Read photoresistor and determine colour of marble
@@ -89,12 +96,20 @@ void sortMarble() {
 
 // Indicate that DONE_THRESHOLD marbles have been sorted
 void doneMarble() {
-  
+  digitalWrite(DONE_LED, LOW);
+  Serial.print("done");
 }
 
 // Kill the marble sorter
 void terminateMarble() {
-  
+  digitalWrite(SENSE_LED, LOW);
+
+  while (true) {
+    digitalWrite(DONE_LED, HIGH);
+    delay(DONE_BLINK_RATE);
+    digitalWrite(DONE_LED, LOW);
+    delay(DONE_BLINK_RATE);
+  }
 }
 
 void loop() {
