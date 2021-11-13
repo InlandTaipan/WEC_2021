@@ -1,6 +1,7 @@
 #include <Stepper.h>
 
 #define PHOTORESISTOR A0
+#define DONE_LED D2
 #define COLOUR_THRESHOLD 630
 
 #define DARK_BLUE true
@@ -9,6 +10,11 @@
 
 //Correct stepper order
 Stepper motor(STEPS90DEG, 8, 10, 9, 11);
+
+#define MAX_MARBLES 10
+#define DONE_THRESHOLD 5
+
+int numMarblesSorted = 0; // Number of marbles sorted
 
 void setup() {
   //for debug
@@ -24,7 +30,7 @@ void setup() {
 
 // Read photoresistor and determine colour of marble
 bool spinDirection() {
-  int reading = digitalRead(PHOTORESISTOR);
+  int reading = analogRead(PHOTORESISTOR);
 
   if (reading >= COLOUR_THRESHOLD)
     return DARK_BLUE;
@@ -73,9 +79,33 @@ void spinMotor(bool direct)
   }
 }
 
+// Performs all necessary actions to sort one marble
+void sortMarble() {
+
+  spinMotor(debounceSpinDirection());
+
+  numMarblesSorted++;
+}
+
+// Indicate that DONE_THRESHOLD marbles have been sorted
+void doneMarble() {
+  
+}
+
+// Kill the marble sorter
+void terminateMarble() {
+  
+}
+
 void loop() {
-  // put your main code here, to run repeatedly:
-  Serial.print(digitalRead(PHOTORESISTOR));
-  delay(10);
+  
+  sortMarble();
+
+  if (numMarblesSorted == DONE_THRESHOLD) {
+    doneMarble();
+  } else if (numMarblesSorted == MAX_MARBLES) {
+    terminateMarble();
+    break;
+  }
   
 }
